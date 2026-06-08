@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>付费进群 H5</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="top-bar" aria-label="页面顶部">
+        <button class="icon-btn" type="button" aria-label="返回">
+          <span aria-hidden="true">‹</span>
+        </button>
+        <div>
+          <p class="eyebrow">知识星球式社群</p>
+          <h1>增长实战内训群</h1>
+        </div>
+        <button class="icon-btn" type="button" aria-label="分享">
+          <span aria-hidden="true">↗</span>
+        </button>
+      </section>
+
+      <section class="group-visual" aria-label="社群信息">
+        <div class="group-badge">
+          <span>VIP</span>
+        </div>
+        <div class="group-copy">
+          <p class="kicker">限时开放 128 个席位</p>
+          <h2>扫码付款后人工核验入群</h2>
+          <p>每周 2 次案例拆解，含资料库、直播回放、作业点评和同城链接。</p>
+        </div>
+      </section>
+
+      <section class="stats-grid" aria-label="核心数据">
+        <article>
+          <strong>¥199</strong>
+          <span>首月体验</span>
+        </article>
+        <article>
+          <strong>326</strong>
+          <span>已加入</span>
+        </article>
+        <article>
+          <strong>7 天</strong>
+          <span>内容回看</span>
+        </article>
+      </section>
+
+      <section class="panel" aria-label="套餐选择">
+        <div class="section-head">
+          <h2>选择权益</h2>
+          <span id="inventoryText">剩余 42 席</span>
+        </div>
+
+        <div class="plan-list" role="radiogroup" aria-label="套餐">
+          <button class="plan-card active" type="button" data-plan="monthly" role="radio" aria-checked="true">
+            <span>
+              <strong>月度会员</strong>
+              <small>适合先体验内容质量</small>
+            </span>
+            <b>¥199</b>
+          </button>
+          <button class="plan-card" type="button" data-plan="quarterly" role="radio" aria-checked="false">
+            <span>
+              <strong>季度会员</strong>
+              <small>含 1 次私聊诊断</small>
+            </span>
+            <b>¥499</b>
+          </button>
+          <button class="plan-card" type="button" data-plan="annual" role="radio" aria-checked="false">
+            <span>
+              <strong>年度会员</strong>
+              <small>含资料库永久更新</small>
+            </span>
+            <b>¥1599</b>
+          </button>
+        </div>
+      </section>
+
+      <section class="panel" aria-label="用户信息">
+        <div class="section-head">
+          <h2>入群信息</h2>
+          <span>用于核验身份</span>
+        </div>
+        <label class="field">
+          <span>手机号</span>
+          <input id="phoneInput" type="tel" inputmode="numeric" maxlength="11" placeholder="请输入手机号" />
+        </label>
+        <label class="field">
+          <span>微信号</span>
+          <input id="wechatInput" type="text" maxlength="32" placeholder="用于管理员备注" />
+        </label>
+      </section>
+
+      <section class="timeline" aria-label="入群流程">
+        <div class="step done"><span></span><p>填写信息</p></div>
+        <div class="step" id="payStep"><span></span><p>扫码付款</p></div>
+        <div class="step" id="joinStep"><span></span><p>等待拉群</p></div>
+      </section>
+    </main>
+
+    <footer class="checkout-bar">
+      <div>
+        <span>应付</span>
+        <strong id="totalPrice">¥199</strong>
+      </div>
+      <button id="payButton" class="primary-btn" type="button">立即支付</button>
+    </footer>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <dialog id="paymentDialog" class="sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-head">
+        <div>
+          <p class="eyebrow">订单支付</p>
+          <h2 id="orderTitle">月度会员</h2>
+        </div>
+        <button id="closePayment" class="icon-btn dark" type="button" aria-label="关闭">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="pay-methods" role="radiogroup" aria-label="支付方式">
+        <button class="method active" type="button" data-method="wechat" role="radio" aria-checked="true">
+          <span class="method-icon wechat">微</span>
+          <span>微信支付</span>
+        </button>
+        <button class="method" type="button" data-method="alipay" role="radio" aria-checked="false">
+          <span class="method-icon alipay">支</span>
+          <span>支付宝</span>
+        </button>
+      </div>
+      <div class="order-card">
+        <span>订单号</span>
+        <strong id="orderNo">PG202606080001</strong>
+      </div>
+      <div class="merchant-code-card">
+        <canvas id="merchantCodeCanvas" class="merchant-code" width="220" height="220" aria-label="商家收款码占位符"></canvas>
+        <div>
+          <strong id="merchantCodeTitle">微信商家码占位符</strong>
+          <p>上线前把这里替换成你的真实商家收款码。付款备注建议填写手机号后四位，方便人工核验。</p>
+        </div>
+      </div>
+      <button id="paidButton" class="primary-btn wide" type="button">我已付款，提交入群信息</button>
+    </dialog>
+
+    <dialog id="successDialog" class="sheet success-sheet">
+      <div class="sheet-handle"></div>
+      <div class="success-mark" aria-hidden="true">✓</div>
+      <h2>资料已提交</h2>
+      <p>管理员会按订单号和收款记录核验，确认后通过你填写的微信号拉你进群。</p>
+      <div class="secret-code">
+        <span>核验订单</span>
+        <strong id="verifyOrderNo">PG202606080001</strong>
+      </div>
+      <button id="copyButton" class="primary-btn wide" type="button">复制订单号</button>
+    </dialog>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
