@@ -13,6 +13,8 @@ const orderTitle = document.querySelector("#orderTitle");
 const orderNo = document.querySelector("#orderNo");
 const verifyOrderNo = document.querySelector("#verifyOrderNo");
 const merchantCodeTitle = document.querySelector("#merchantCodeTitle");
+const inlineMerchantCodeTitle = document.querySelector("#inlineMerchantCodeTitle");
+const inlinePayHint = document.querySelector("#inlinePayHint");
 const phoneInput = document.querySelector("#phoneInput");
 const wechatInput = document.querySelector("#wechatInput");
 const paymentDialog = document.querySelector("#paymentDialog");
@@ -33,6 +35,8 @@ function setPlan(planKey) {
   const plan = plans[planKey];
   totalPrice.textContent = `¥${plan.price}`;
   orderTitle.textContent = plan.name;
+  inlinePayHint.textContent = `请付 ¥${plan.price}`;
+  drawMerchantCode();
 
   document.querySelectorAll(".plan-card").forEach((card) => {
     const active = card.dataset.plan === planKey;
@@ -43,12 +47,15 @@ function setPlan(planKey) {
 
 function setMethod(method) {
   selectedMethod = method;
-  merchantCodeTitle.textContent = method === "wechat" ? "微信商家码占位符" : "支付宝商家码占位符";
+  const title = method === "wechat" ? "微信商家码占位符" : "支付宝商家码占位符";
+  merchantCodeTitle.textContent = title;
+  inlineMerchantCodeTitle.textContent = title;
   document.querySelectorAll(".method").forEach((button) => {
     const active = button.dataset.method === method;
     button.classList.toggle("active", active);
     button.setAttribute("aria-checked", String(active));
   });
+  drawMerchantCode();
 }
 
 function isValidPhone(phone) {
@@ -94,7 +101,11 @@ function openPayment() {
 }
 
 function drawMerchantCode() {
-  const canvas = document.querySelector("#merchantCodeCanvas");
+  const canvases = [document.querySelector("#merchantCodeCanvas"), document.querySelector("#inlineMerchantCodeCanvas")].filter(Boolean);
+  canvases.forEach((canvas) => drawMerchantCodeOnCanvas(canvas));
+}
+
+function drawMerchantCodeOnCanvas(canvas) {
   const ctx = canvas.getContext("2d");
   const cells = 31;
   const size = canvas.width / cells;

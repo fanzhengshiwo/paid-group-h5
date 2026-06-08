@@ -93,6 +93,30 @@
         </label>
       </section>
 
+      <section class="panel payment-panel" aria-label="扫码付款">
+        <div class="section-head">
+          <h2>扫码付款</h2>
+          <span id="inlinePayHint">请付 ¥199</span>
+        </div>
+        <div class="pay-methods inline-methods" role="radiogroup" aria-label="页面支付方式">
+          <button class="method active" type="button" data-method="wechat" role="radio" aria-checked="true">
+            <span class="method-icon wechat">微</span>
+            <span>微信支付</span>
+          </button>
+          <button class="method" type="button" data-method="alipay" role="radio" aria-checked="false">
+            <span class="method-icon alipay">支</span>
+            <span>支付宝</span>
+          </button>
+        </div>
+        <div class="merchant-code-card inline-code-card">
+          <canvas id="inlineMerchantCodeCanvas" class="merchant-code" width="220" height="220" aria-label="页面商家收款码占位符"></canvas>
+          <div>
+            <strong id="inlineMerchantCodeTitle">微信商家码占位符</strong>
+            <p>这里放你的真实商家码。付款备注填手机号后四位，管理员核验后拉群。</p>
+          </div>
+        </div>
+      </section>
+
       <section class="timeline" aria-label="入群流程">
         <div class="step done"><span></span><p>填写信息</p></div>
         <div class="step" id="payStep"><span></span><p>扫码付款</p></div>
@@ -105,7 +129,7 @@
         <span>应付</span>
         <strong id="totalPrice">¥199</strong>
       </div>
-      <button id="payButton" class="primary-btn" type="button">立即支付</button>
+      <button id="payButton" class="primary-btn" type="button">我已付款</button>
     </footer>
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
