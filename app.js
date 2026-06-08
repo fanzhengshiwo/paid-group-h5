@@ -5,15 +5,12 @@ const plans = {
 };
 
 let selectedPlan = "monthly";
-let selectedMethod = "wechat";
 let toastTimer;
 
 const totalPrice = document.querySelector("#totalPrice");
 const orderTitle = document.querySelector("#orderTitle");
 const orderNo = document.querySelector("#orderNo");
 const verifyOrderNo = document.querySelector("#verifyOrderNo");
-const merchantCodeTitle = document.querySelector("#merchantCodeTitle");
-const inlineMerchantCodeTitle = document.querySelector("#inlineMerchantCodeTitle");
 const inlinePayHint = document.querySelector("#inlinePayHint");
 const phoneInput = document.querySelector("#phoneInput");
 const wechatInput = document.querySelector("#wechatInput");
@@ -36,26 +33,12 @@ function setPlan(planKey) {
   totalPrice.textContent = `¥${plan.price}`;
   orderTitle.textContent = plan.name;
   inlinePayHint.textContent = `请付 ¥${plan.price}`;
-  drawMerchantCode();
 
   document.querySelectorAll(".plan-card").forEach((card) => {
     const active = card.dataset.plan === planKey;
     card.classList.toggle("active", active);
     card.setAttribute("aria-checked", String(active));
   });
-}
-
-function setMethod(method) {
-  selectedMethod = method;
-  const title = method === "wechat" ? "微信商家码占位符" : "支付宝商家码占位符";
-  merchantCodeTitle.textContent = title;
-  inlineMerchantCodeTitle.textContent = title;
-  document.querySelectorAll(".method").forEach((button) => {
-    const active = button.dataset.method === method;
-    button.classList.toggle("active", active);
-    button.setAttribute("aria-checked", String(active));
-  });
-  drawMerchantCode();
 }
 
 function isValidPhone(phone) {
@@ -94,61 +77,9 @@ function openPayment() {
 
   orderNo.textContent = createOrderNo();
   verifyOrderNo.textContent = orderNo.textContent;
-  drawMerchantCode();
   if (typeof paymentDialog.showModal === "function") {
     paymentDialog.showModal();
   }
-}
-
-function drawMerchantCode() {
-  const canvases = [document.querySelector("#merchantCodeCanvas"), document.querySelector("#inlineMerchantCodeCanvas")].filter(Boolean);
-  canvases.forEach((canvas) => drawMerchantCodeOnCanvas(canvas));
-}
-
-function drawMerchantCodeOnCanvas(canvas) {
-  const ctx = canvas.getContext("2d");
-  const cells = 31;
-  const size = canvas.width / cells;
-  const seed = `${orderNo.textContent}-${selectedPlan}-${selectedMethod}-merchant-placeholder`;
-
-  ctx.fillStyle = "#fff";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  function finder(x, y) {
-    ctx.fillStyle = "#14211a";
-    ctx.fillRect(x * size, y * size, size * 7, size * 7);
-    ctx.fillStyle = "#fff";
-    ctx.fillRect((x + 1) * size, (y + 1) * size, size * 5, size * 5);
-    ctx.fillStyle = "#14211a";
-    ctx.fillRect((x + 2) * size, (y + 2) * size, size * 3, size * 3);
-  }
-
-  finder(1, 1);
-  finder(23, 1);
-  finder(1, 23);
-
-  for (let y = 0; y < cells; y += 1) {
-    for (let x = 0; x < cells; x += 1) {
-      const inFinder =
-        (x >= 1 && x < 8 && y >= 1 && y < 8) ||
-        (x >= 23 && x < 30 && y >= 1 && y < 8) ||
-        (x >= 1 && x < 8 && y >= 23 && y < 30);
-      if (inFinder) continue;
-
-      const charCode = seed.charCodeAt((x * 7 + y * 11) % seed.length);
-      if ((charCode + x * 3 + y * 5) % 4 === 0) {
-        ctx.fillStyle = (x + y) % 5 === 0 ? "#126a46" : "#14211a";
-        ctx.fillRect(x * size, y * size, size, size);
-      }
-    }
-  }
-
-  ctx.fillStyle = "#fff";
-  ctx.fillRect(76, 98, 68, 24);
-  ctx.fillStyle = selectedMethod === "wechat" ? "#126a46" : "#2377c8";
-  ctx.font = "bold 13px sans-serif";
-  ctx.textAlign = "center";
-  ctx.fillText(selectedMethod === "wechat" ? "微信收款" : "支付宝收款", 110, 115);
 }
 
 function submitPaidInfo() {
@@ -160,10 +91,6 @@ function submitPaidInfo() {
 
 document.querySelectorAll(".plan-card").forEach((card) => {
   card.addEventListener("click", () => setPlan(card.dataset.plan));
-});
-
-document.querySelectorAll(".method").forEach((button) => {
-  button.addEventListener("click", () => setMethod(button.dataset.method));
 });
 
 document.querySelector("#payButton").addEventListener("click", openPayment);
@@ -180,5 +107,3 @@ document.querySelector("#copyButton").addEventListener("click", async () => {
 });
 
 setPlan(selectedPlan);
-setMethod(selectedMethod);
-drawMerchantCode();
